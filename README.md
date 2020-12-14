@@ -1,57 +1,27 @@
-# Origin Markets Backend Test
-
-### Spec:
-
-We would like you to implement an api to: ingest some data representing bonds, query an external api for some additional data, store the result, and make the resulting data queryable via api.
-- Fork this hello world repo leveraging Django & Django Rest Framework. (If you wish to use something else like flask that's fine too.)
-- Please pick and use a form of authentication, so that each user will only see their own data. ([DRF Auth Options](https://www.django-rest-framework.org/api-guide/authentication/#api-reference))
-- We are missing some data! Each bond will have a `lei` field (Legal Entity Identifier). Please use the [GLEIF API](https://www.gleif.org/en/lei-data/gleif-lei-look-up-api/access-the-api) to find the corresponding `Legal Name` of the entity which issued the bond.
-- If you are using a database, SQLite is sufficient.
-- Please test any additional logic you add.
-
-#### Project Quickstart
-
+## Usage
+### Running the API
 Inside a virtual environment running Python 3:
-- `pip install -r requirement.txt`
-- `./manage.py runserver` to run server.
-- `./manage.py test` to run tests.
 
-#### API
+Install dependencies
+```
+pip install --upgrade pip
+pip install -r ./requirements.txt
+```
 
-We should be able to send a request to:
+*  Run migrations: `python manage.py migrate`
+*  Create superuser and follow the instructions: `python manage.py createsuperuser`
+*  Start server: `python manage.py runserver`
+*  Go to `http://localhost:8000/admin/` and log in as your superuser
+*  Navigate to  `http://localhost:8000/bonds/` and create and view bonds as that user
+You can go back in admin and create more users and they will have their own bonds.
 
-`POST /bonds/`
+### Running the tests
+- `python manage.py test`
 
-to create a "bond" with data that looks like:
-~~~
-{
-    "isin": "FR0000131104",
-    "size": 100000000,
-    "currency": "EUR",
-    "maturity": "2025-02-28",
-    "lei": "R0MUWSFPU8MPRO8K5P83"
-}
-~~~
----
-We should be able to send a request to:
-
-`GET /bonds/`
-
-to see something like:
-~~~
-[
-    {
-        "isin": "FR0000131104",
-        "size": 100000000,
-        "currency": "EUR",
-        "maturity": "2025-02-28",
-        "lei": "R0MUWSFPU8MPRO8K5P83",
-        "legal_name": "BNPPARIBAS"
-    },
-    ...
-]
-~~~
-We would also like to be able to add a filter such as:
-`GET /bonds/?legal_name=BNPPARIBAS`
-
-to reduce down the results.
+## What I would do with more time
+*  Spend more time on determining the best values for the model attributes' max lengths.
+*  Not have a direct Bond <-> User relationship for various reasons
+   * As a business object, a bond has nothing to do with 'users'. Therefore, the model should represent the financial security only – nothing more than that.
+   * Use a many-to-many relationship so multiple users can have access to the same bond. This would use a junction table in the db, avoiding having a direct link to a user on the Bond object.
+   * If we need to link it to other types of entities (e.g. company, exchange), should we keep adding such links via foreign keys? No because this could get messy quickly. So this initial design is seemingly not very futureproof.
+*  Implement user registration and login via the API instead of relying on Django
