@@ -3,6 +3,7 @@ from typing import Optional
 
 from django.db import models
 from django.db.models.fields import CharField, DateField, DecimalField
+from django.contrib.auth import get_user_model
 import requests
 
 
@@ -13,6 +14,7 @@ class Bond(models.Model):
     maturity = DateField()
     lei = CharField(max_length=20)
     legal_name = CharField(max_length=128, blank=True, null=True)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     def __repr__(self):
         return f'Bond ({self.isin})'

@@ -6,7 +6,7 @@ from .models import Bond
 class BondSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bond
-        fields = '__all__'
+        exclude = ('user', )
 
     def create(self, validated_data):
         # Fetch bond's name from GLEIF's API
