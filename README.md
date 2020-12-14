@@ -19,9 +19,9 @@ You can go back in admin and create more users and they will have their own bond
 - `python manage.py test`
 
 ## What I would do with more time
-*  Spend more time on determining the best values for the model attributes' max lengths.
+*  Spend a little bit more time on determining the best values for the model attributes' max lengths.
 *  Not have a direct Bond <-> User relationship for various reasons
    * As a business object, a bond has nothing to do with 'users'. Therefore, the model should represent the financial security only – nothing more than that.
    * Use a many-to-many relationship so multiple users can have access to the same bond. This would use a junction table in the db, avoiding having a direct link to a user on the Bond object.
    * If we need to link it to other types of entities (e.g. company, exchange), should we keep adding such links via foreign keys? No because this could get messy quickly. So this initial design is seemingly not very futureproof.
-*  Implement user registration and login via the API instead of relying on Django
+*  Implement user registration and login via the API instead of relying on Django's default authentication.
